@@ -10,7 +10,7 @@ import './index.css'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Claude">
       <AuthProvider>
         <Layout>
           <Routes>
