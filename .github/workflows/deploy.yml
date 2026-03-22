@@ -22,10 +22,24 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
+      - name: Check secrets are set
+        run: |
+          if [ -z "$VITE_SUPABASE_URL" ]; then echo "ERROR: VITE_SUPABASE_URL is empty"; exit 1; fi
+          if [ -z "$VITE_SUPABASE_ANON_KEY" ]; then echo "ERROR: VITE_SUPABASE_ANON_KEY is empty"; exit 1; fi
+          echo "Secrets are set"
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
       - run: npm run build
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      - name: Verify build output
+        run: |
+          echo "Files in dist:"
+          ls -la dist/
+          echo "---"
+          cat dist/index.html
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
